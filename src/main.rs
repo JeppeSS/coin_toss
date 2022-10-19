@@ -19,7 +19,8 @@ fn main() {
         false => CoinFace::Tails,
     };
 
-    loop {
+    let mut is_running = true;
+    while is_running {
         println!("Guess a side!");
         println!("Enter one of the following options:");
         println!(" ");
@@ -30,12 +31,17 @@ fn main() {
         println!("  T, Tail, Tails");
         println!(" ");
 
-        let mut guess = String::new();
-        io::stdin()
-            .read_line(&mut guess)
-            .expect("Failed to read line");
+        let mut input = String::new();
+        match io::stdin()
+            .read_line(&mut input) {
+                Err(error) => {
+                    println!("Could not read input: {}", error);
+                    continue;
+                }
+                _ =>(),
+            }
 
-        let guessed_coin_face = match guess.trim() {
+        let guessed_coin_face = match input.trim() {
             "H" => Some(CoinFace::Heads),
             "Head" => Some(CoinFace::Heads),
             "Heads" => Some(CoinFace::Heads),
@@ -45,22 +51,22 @@ fn main() {
             _ => None,
         };
 
-        if guessed_coin_face.is_some() {
-            let guessed_coin_face = guessed_coin_face.unwrap();
-            println!(" ");
-            println!("*Cling* - The coin lands on the ground");
-            println!("Coin face showing: {:?}", guessed_coin_face);
-            println!(" ");
 
-            if guessed_coin_face == tossed_coin_face {
-                println!("You guessed correct!");
-                break;
-            } else {
-                println!("You lost.");
-                break;
-            }
-        } else {
-            println!("Invalid input, try again!");
+        match guessed_coin_face {
+            Some(coin_face) => {
+                println!(" ");
+                println!("*Cling* - The coin lands on the ground");
+                println!("Coin face showing: {:?}", coin_face);
+                println!(" ");
+                if coin_face == tossed_coin_face {
+                    println!("You guessed correct!");
+                    is_running = false;
+                } else {
+                    println!("You lost.");
+                    is_running = false; 
+                }
+            },
+            None =>  println!("Invalid input, try again!"),
         }
     }
 }
