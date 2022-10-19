@@ -6,6 +6,23 @@ enum CoinFace {
     Tails,
 }
 
+struct GameState {
+    tossed_coin_side: CoinFace,
+}
+
+impl GameState {
+    fn new() -> GameState {
+        let coin_flip = match rand::random::<bool>() {
+            true => CoinFace::Heads,
+            false => CoinFace::Tails,
+        };
+
+        GameState {
+            tossed_coin_side: coin_flip,
+        }
+    }
+}
+
 fn main() {
     println!("Coin toss");
     println!("Welcome to the coin toss guessing game! The rules are simple, guess which side of the coin is showing when it lands - Heads or tails!");
@@ -13,10 +30,7 @@ fn main() {
     println!(" ");
     println!("Guess a side!");
 
-    let coin_flip = match rand::random::<bool>() {
-        true => CoinFace::Heads,
-        false => CoinFace::Tails,
-    };
+    let game = GameState::new();
 
     println!("Enter one of the following options:");
     println!(" ");
@@ -43,7 +57,7 @@ fn main() {
     };
 
     if guessed_coin_face.is_some() {
-        if guessed_coin_face.unwrap() == coin_flip {
+        if guessed_coin_face.unwrap() == game.tossed_coin_side {
             println!("You guessed correct!");
         } else {
             println!("Wrong, try again.")
