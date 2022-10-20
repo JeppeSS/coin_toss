@@ -1,9 +1,19 @@
+use std::fmt;
 use std::io;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(PartialEq, Eq)]
 enum CoinFace {
     Heads,
     Tails,
+}
+
+impl fmt::Display for CoinFace {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> fmt::Result {
+        match *self {
+            CoinFace::Heads => write!(f, "Heads"),
+            CoinFace::Tails => write!(f, "Tails"),
+        }
+    }
 }
 
 fn main() {
@@ -32,14 +42,13 @@ fn main() {
         println!(" ");
 
         let mut input = String::new();
-        match io::stdin()
-            .read_line(&mut input) {
-                Err(error) => {
-                    println!("Could not read input: {}", error);
-                    continue;
-                }
-                _ =>(),
+        match io::stdin().read_line(&mut input) {
+            Err(error) => {
+                println!("Could not read input: {}", error);
+                continue;
             }
+            _ => (),
+        }
 
         let guessed_coin_face = match input.trim() {
             "H" => Some(CoinFace::Heads),
@@ -51,22 +60,21 @@ fn main() {
             _ => None,
         };
 
-
         match guessed_coin_face {
             Some(coin_face) => {
                 println!(" ");
                 println!("*Cling* - The coin lands on the ground");
-                println!("Coin face showing: {:?}", coin_face);
+                println!("Coin face showing: {}", coin_face);
                 println!(" ");
                 if coin_face == tossed_coin_face {
                     println!("You guessed correct!");
                     is_running = false;
                 } else {
                     println!("You lost.");
-                    is_running = false; 
+                    is_running = false;
                 }
-            },
-            None =>  println!("Invalid input, try again!"),
+            }
+            None => println!("Invalid input, try again!"),
         }
     }
 }
